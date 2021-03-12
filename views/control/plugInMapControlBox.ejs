@@ -1,0 +1,89 @@
+<script src="/js/panzoom.min.js"></script>
+<div class="map_control_box" id="mapControlBox">
+  <button
+    name="isApiClientConn"
+    class="btn btn-danger btn-sm cursorDefault"
+    style="pointer-events: none"
+    title="수집서버 연결 상태"
+  >
+    <span class="glyphicon glyphicon-link"></span>
+  </button>
+  <!-- panzoom button-->
+  <button id="" class="btn btn-default btn-sm" title="확대">
+    <span class="glyphicon glyphicon-zoom-in"></span>
+  </button>
+  <button id="zoomOut" class="btn btn-default btn-sm" title="축소">
+    <span class="glyphicon glyphicon-zoom-out"></span>
+  </button>
+  <button id="reset" class="btn btn-default btn-sm" title="초기화">
+    <span class="glyphicon glyphicon-refresh"></span>
+  </button>
+  <button id="scrollUp" class="btn btn-default btn-sm" title="최상단으로">
+    <span class="glyphicon glyphicon-arrow-up"></span>
+  </button>
+  <button id="monitoring_mode" class="btn btn-warning btn-sm" title="최대화">
+    <span class="glyphicon glyphicon-fullscreen"></span>
+  </button>
+</div>
+
+<!-- panzoom & 맵 제어 박스 세팅 -->
+<script>
+  // 맵 제어 박스 스크롤에 반응하여 상단 고정
+  $(document).ready(() => {
+    var filter = 'win16|win32|win64|mac|macintel';
+    var canvas = document.getElementById('svgCanvas');
+    var startScale = 1;
+
+    // 캔버스 실행에 실패할 경우 (Map이 존재하지 않을 경우)
+    if (canvas === null) {
+      document.querySelector('#canvas').remove();
+      document.querySelector('#mapControlBox').remove();
+      document.querySelector('#commandStatus').remove();
+      return false;
+    }
+
+    var canvasPanzoom = Panzoom(canvas, {
+      cursor: 'default',
+      startScale: startScale,
+      // maxScale: 0.5,
+      minScale: 0.5,
+    });
+
+    document.getElementById('zoomIn').addEventListener('click', canvasPanzoom.zoomIn);
+    document.getElementById('zoomOut').addEventListener('click', canvasPanzoom.zoomOut);
+    document.getElementById('reset').addEventListener('click', canvasPanzoom.reset);
+    document.getElementById('scrollUp').addEventListener('click', () => {
+      document.documentElement.scrollTop = 0;
+    });
+    canvas.addEventListener('wheel', canvasPanzoom.zoomWithWheel); // 마우스 휠 확대/축소 이벤트
+
+    const mCBoxOffset = $('#mapControlBox').offset();
+
+    // $(window).scroll(() => {
+    //   $(document).scrollTop() > mCBoxOffset.top
+    //     ? $('#mapControlBox').css({ position: 'fixed', top: '0px' })
+    //     : $('#mapControlBox').css({ position: '', top: '' });
+    // });
+  });
+
+  // 모니터링 버튼 이벤트
+
+  document.querySelector('#monitoring_mode').addEventListener('click', () => {
+    const monitoringTitle = document.querySelector('#monitoring_mode');
+    monitoringTitle.setAttribute(
+      'title',
+      monitoringTitle.getAttribute('title') === '최대화' ? '초기화' : '최대화',
+    );
+
+    $('.container_row').toggleClass('hidden');
+    $('.container-fluid_st').toggleClass('hidden');
+    $('#wrap > header').toggleClass('hidden');
+    $('#wrap > footer').toggleClass('hidden');
+
+    $('#monitoring_mode').children().toggleClass('glyphicon-fullscreen');
+    $('#monitoring_mode').children().toggleClass('glyphicon-remove');
+
+    // $('.svg_area').height(window.innerHeight);
+    window.dispatchEvent(new Event('resize'));
+  });
+</script>

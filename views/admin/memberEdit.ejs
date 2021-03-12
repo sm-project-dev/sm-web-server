@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("../master/head.ejs") %>
+    <script src="/js/contents/master/mainUtil.js"></script>
+  </head>
+  <body>
+    <script>
+      const member = <%- JSON.stringify(member) %>;
+      const user = <%- JSON.stringify(user) %>;
+      const memberIdx = <%- JSON.stringify(memberIdx) %>;
+    </script>
+    <div id="wrap" class="wrap hidden">
+      <!-- Header -->
+      <%- include("../master/header.ejs") %>
+      <!--메인-->
+      <div class="container_body">
+        <div class="container_row flex_jus_center">
+          <div class="col-sm-6">
+            <form role="form" id="memberEdit" action="" method="post">
+              <input type="hidden" name="_method" value="put" />
+              <div class="form-group">
+                <label>아이디</label>
+                <input type="text" readonly class="form-control" id="user_id" />
+              </div>
+              <div class="form-group">
+                <label>성명</label>
+                <input type="text" readonly class="form-control" id="name" />
+              </div>
+              <div class="form-group">
+                <label>닉네임</label>
+                <input type="text" readonly class="form-control" id="nick_name" />
+              </div>
+              <div class="form-group">
+                <label>휴대폰 번호</label>
+                <input type="tel" readonly class="form-control" id="tel" />
+              </div>
+              <div class="form-group">
+                <label>관리사이트</label>
+                <input type="text" readonly class="form-control" id="main_name" />
+              </div>
+              <div class="form-group">
+                <label>회원등급</label>
+                <select class="form-control" id="grade" name="grade">
+                  <option value="awaiter">awaiter</option>
+                  <option value="manager">manager</option>
+                  <option value="admin">admin</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>회원접근차단</label>
+                <select class="form-control" id="isDeleted" name="is_deleted">
+                  <option value="1">O</option>
+                  <option value="0">X</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>계정잠김상태</label>
+                <select class="form-control" id="isAccountLock" name="is_account_lock">
+                  <option value="1">O</option>
+                  <option value="0">X</option>
+                </select>
+              </div>
+              <% if(member.grade !== 'admin') { %>
+              <div class="form-group">
+                <label>비밀번호를 초기화하시겠습니까?</label>
+                <select class="form-control" id="isPwRenewal" name="is_pw_renewal">
+                  <option value="0">X</option>
+                  <option value="1">O</option>
+                </select>
+                <span class="error_next_box">
+                  * 비밀번호를 초기화하면 회원의 비밀번호가 임의로 변경됩니다.
+                </span>
+              </div>
+              <% } %>
+              <div class="form-group text-center">
+                <button type="button" id="submitUpdate" class="btn btn-primary">
+                  정보변경<i class="fa fa-check spaceLeft"></i>
+                </button>
+                <button type="button" class="btn btn-danger" id="historyBack">
+                  돌아가기<i class="fa fa-times spaceLeft"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--하단1-->
+      <%- include("../master/footer.ejs") %>
+    </div>
+    <!-- 관리 -->
+    <script>
+      setDomElementValueWithJson(
+        document.getElementById('memberEdit'),
+        member,
+        'value',
+        'id',
+      );
+
+      document.getElementById('memberEdit').action = memberIdx;
+      // document.getElementById('memberEdit').action = memberIdx;
+      // 가입 취소 시 로그인 창으로
+      $('#historyBack').on('click', function () {
+        location.href = window.location.origin + '/admin';
+      });
+
+      $('#grade').val(_.toString(member.grade)).prop('selected', true);
+
+      $('#isDeleted').val(_.toString(member.is_deleted)).prop('selected', true);
+
+      $('#isAccountLock').val(_.toString(member.is_account_lock)).prop('selected', true);
+
+      // $('#isPwRenewal').val(_.toString(member.is_pw_renewal)).prop('selected', true);
+
+      // 정보 수정 시
+      document.querySelector('#submitUpdate').addEventListener('click', function () {
+        // 관리자 비밀번호 수정 로직
+        const $inputPassword = $('#inputPassword');
+
+        // 비밀번호 돔이 존재하고 해당 비밀번호를 변경하고자 할 경우
+        if (!_.isEmpty($inputPassword) && $inputPassword.val() !== '') {
+          const pwReg = /^(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])(?=.*[0-9]).{8,16}$/;
+          if (!pwReg.test($('#inputPassword').val())) {
+            alert('비밀번호는 8~16자 숫자+영문자+특수문자를 사용하세요.');
+            $('#inputPassword').val('').focus();
+            return false;
+          }
+
+          if ($('#inputPasswordCheck').val() === '') {
+            alert('비밀번호를 다시 한번 더 입력하세요');
+            $('#inputPasswordCheck').focus();
+
+            return false;
+          }
+
+          if ($('#inputPassword').val() !== $('#inputPasswordCheck').val()) {
+            alert('비밀번호를 둘다 동일하게 입력하세요');
+            return false;
+          }
+        }
+
+        const form = document.querySelector('form');
+        form.submit();
+      });
+    </script>
+  </body>
+</html>

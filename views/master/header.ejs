@@ -1,0 +1,119 @@
+<header>
+  <nav class="navbar navbar-inverse container-fluid">
+    <div class="max_w1024">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target="#myNavbar"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand header_home_area" id="projectHomeDom" href="/">
+          <img src="" />
+          <span></span>
+        </a>
+      </div>
+      <div id="myNavbar" class="collapse navbar-collapse navbar-right">
+        <ul id="naviListDom" class="nav navbar-nav">
+          <li><a href="/">메인</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="header_sub_area">
+    <div class="max_w1024">
+      <div class="header_sub_box">
+        <div class="header_w_r">
+          <select
+            id="siteListDom"
+            name="siteList"
+            class="siteList"
+            label="siteList"
+          ></select>
+        </div>
+        <div class="header_w_r">
+          <div id="weathercastDom" class="nav_row_st_right">
+            <span>2019.03.12(화)</span>
+            <!-- <span class="weacast_txt">날씨</span> -->
+            <img />
+            <input
+              type="text"
+              class="weathercast_temp"
+              id="currWeatherTemp"
+              value=""
+              readonly
+            />
+            <span class="weathercast_data_unit">℃</span>
+          </div>
+          <div class="user_box" id="loginUserDom">
+            <a href="/myPage"> <span class="user_id">tester</span> </a
+            ><span class="user_nim">님</span>
+            <input
+              type="button"
+              class="logout"
+              onclick="location.href='/auth/logout'"
+              value="로그아웃"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<%- include("./modal.ejs") %>
+
+<script>
+  const mainInfo = <%- JSON.stringify(mainInfo) %>;
+  const masterDom = <%- JSON.stringify(dom) %>;
+  // 모달 메시지
+  const modalMsg = <%- JSON.stringify(modalMsg) %>;
+</script>
+
+<script>
+  const { projectMainId = '', naviId = '', manualPath = '' } = mainInfo;
+
+  let { siteId = '', subCategory = '' } = mainInfo;
+
+  const {
+    projectHomeDom = '',
+    loginUserDom = '',
+    naviListDom = '',
+    siteListDom = '',
+    weathercastDom = '',
+  } = masterDom;
+
+  // 모달 메시지가 존재한다면 표출
+  if (modalMsg.length) {
+    showModal(modalMsg);
+  }
+
+  document.getElementById('projectTitle').innerHTML = projectMainId;
+
+  document.getElementById('projectHomeDom').innerHTML = projectHomeDom;
+
+  // 네비게이션 DOM
+  document.getElementById('loginUserDom').innerHTML = loginUserDom;
+  // 네비게이션 DOM
+  document.getElementById('naviListDom').innerHTML = naviListDom;
+  // 사이트 목록 DOM
+  document.getElementById('siteListDom').innerHTML = siteListDom;
+  // 날씨 동적 DOM 생성
+  document.getElementById('weathercastDom').innerHTML = weathercastDom;
+
+  // 사이트 변경 시
+  $('#siteListDom').change(function () {
+    location.href = window.location.origin + '/' + naviId + '/' + $(this).val();
+  });
+
+  // 페이지 동적 바인딩이 완료되었을 경우 View 처리
+  window.onload = function () {
+    document.getElementById('wrap').classList.remove('hidden');
+    // Spinner Loader
+    // $('#loader').removeClass('hidden')
+    // $('#loader-ground').removeClass('hidden')
+  };
+</script>

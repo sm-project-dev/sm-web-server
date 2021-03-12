@@ -1,0 +1,35 @@
+<style>
+  .modal-backdrop {
+    background-color: aliceblue;
+  }
+</style>
+
+<div class="container">
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content modal-backdrop">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" style="color: black;">
+            <b id="modalMsg">Msg</b>
+          </h4>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function showModal(modalMsg) {
+    document.querySelector('#modalMsg').innerHTML = modalMsg;
+
+    $('#myModal').modal('show');
+  }
+</script>

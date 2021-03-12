@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Default Js -->
+    <%- include("../master/head.ejs") %> <%- include("../master/excel.ejs") %>
+    <script src="/js/contents/master/mainUtil.js"></script>
+    <link href="/css/spinner.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <%- include("../master/spinner.ejs") %>
+    <div id="wrap" class="wrap hidden">
+      <!-- Header -->
+      <%- include("../master/header.ejs") %>
+      <!--메인-->
+      <div class="container_body">
+        <div class="container_row navi">
+          <div id="subCategoryDom" class="report_category"></div>
+        </div>
+        <%- include("../master/searchReport.ejs") %>
+        <div class="container_row flex_dir_col">
+          <div class="table-responsive default_area">
+            <table class="table table-bordered number_table">
+              <thead id="sensorReportHeaderDom">
+                <tr>
+                  <th>번호</th>
+                  <th>일시</th>
+                  <th>모듈후면온도(℃)</th>
+                  <th>조도(lx)</th>
+                  <th>이산화탄소(ppm)</th>
+                  <th>토양EC(%)</th>
+                  <th>토양온도(℃)</th>
+                  <th>토양습도(%)</th>
+                  <th>외기온도(℃)</th>
+                  <th>외기습도(%)</th>
+                  <th>수평일사량(W/m2)</th>
+                  <!-- <th scope="col" style="width:7%">풍향</th> -->
+                  <th>풍속(km/h)</th>
+                  <th>강우량(mm/hr)</th>
+                  <!-- <th scope="col" style="width:6%">강우상황</th> -->
+                </tr>
+              </thead>
+              <tbody id="sensorReportBodyDom"></tbody>
+            </table>
+          </div>
+          <div id="paginationDom" class="table_pagenation"></div>
+        </div>
+      </div>
+      <!--하단1-->
+      <%- include("../master/footer.ejs") %>
+    </div>
+
+    <script>
+      const dom = <%- JSON.stringify(dom) %>;
+
+      const searchRange = <%- JSON.stringify(searchRange) %>;
+      const reportInfo = <%- JSON.stringify(reportInfo) %>;
+    </script>
+
+    <script>
+      // 돔 설정
+      const {
+        subSelectBoxDom,
+        sensorReportHeaderDom,
+        sensorReportBodyDom,
+        paginationDom,
+        subCategoryDom,
+      } = dom;
+      // $('#subCategoryDom').html(<%- JSON.stringify(dom.subCategoryDom) %>);
+
+      document.getElementById('subSelectBoxDom').innerHTML = subSelectBoxDom;
+      document.getElementById('sensorReportHeaderDom').innerHTML = sensorReportHeaderDom;
+      document.getElementById('sensorReportBodyDom').innerHTML = sensorReportBodyDom;
+      document.getElementById('paginationDom').innerHTML = paginationDom;
+      document.getElementById('subCategoryDom').innerHTML = subCategoryDom;
+
+      // Master.Header 에서 정의한 내용 덮어쓰기
+      siteId = _.get(reportInfo, 'siteId');
+      subCategory = _.get(reportInfo, 'subCategory');
+
+      const { subCategoryId, subCategoryName } = reportInfo;
+
+      document.getElementById('subCategoryName').innerHTML = subCategoryName;
+    </script>
+
+    <script src="/js/contents/report/search.js"></script>
+
+    <!-- 기본 데이터 세팅 -->
+    <script>
+      const { searchInterval, searchType, searchOption } = searchRange;
+      checkSelectBoxOption('searchInterval', searchInterval);
+      checkSelectBoxOption('searchType', searchType);
+      checkSelectBoxOption('searchOption', searchOption);
+
+      // 검색 타입에 따라 적용
+      applySearchType(searchType);
+    </script>
+  </body>
+</html>
